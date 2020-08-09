@@ -5,8 +5,8 @@ namespace UnitTests.Infrastructure.CommandHandlerBase.Fakers.Data
 {
     internal class Message
     {
-        public Guid CorrelationId { get; set; }
-        public Type MessageType { get; set; }
-        public MessageBase Body { get; set; }   
+        internal Guid CorrelationId { get; set; }
+        internal Type MessageType { get; set; }
+        internal MessageBase Body { get; set; }   
     }
 }

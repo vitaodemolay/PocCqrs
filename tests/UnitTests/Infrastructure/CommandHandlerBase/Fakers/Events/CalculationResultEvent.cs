@@ -5,7 +5,7 @@ namespace UnitTests.Infrastructure.CommandHandlerBase.Fakers.Events
 {
     internal class CalculationResultEvent : Event
     {
-        public CalculationResultEvent(int result, string operation, Guid correlationId)
+        internal CalculationResultEvent(int result, string operation, Guid correlationId)
         : base(correlationId)
         {
             this.Result = result;
@@ -14,7 +14,7 @@ namespace UnitTests.Infrastructure.CommandHandlerBase.Fakers.Events
 
         }
 
-        public CalculationResultEvent(string errorMessage, string operation, Guid correlationId)
+        internal CalculationResultEvent(string errorMessage, string operation, Guid correlationId)
         : base(correlationId)
         {
             this.Result = 0;
@@ -22,11 +22,11 @@ namespace UnitTests.Infrastructure.CommandHandlerBase.Fakers.Events
             this.ErrorMessage = errorMessage;
         }
         
-        public int Result { get; private set; }
-        public string Operation { get; private set; }
-        public string ErrorMessage { get; private set; }
+        internal int Result { get; private set; }
+        internal string Operation { get; private set; }
+        internal string ErrorMessage { get; private set; }
 
-        public bool IsSuccess => string.IsNullOrEmpty(this.ErrorMessage);
-        public bool IsFail => !this.IsSuccess;
+        internal bool IsSuccess => string.IsNullOrEmpty(this.ErrorMessage);
+        internal bool IsFail => !this.IsSuccess;
     }
 }
