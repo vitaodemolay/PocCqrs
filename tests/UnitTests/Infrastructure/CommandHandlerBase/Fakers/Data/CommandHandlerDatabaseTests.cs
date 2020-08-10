@@ -14,12 +14,12 @@ namespace UnitTests.Infrastructure.CommandHandlerBase.Fakers.Data
             _database = new List<Message>();
         }
 
-        public void AddMessage<T>(T message) where T : MessageBase
+        public void AddMessage<T>(T message, Guid correlationId) where T : MessageBase
         {
             if (message != null)
             {
                 _database.Add(new Message{
-                    CorrelationId = message.MessageId,
+                    CorrelationId = correlationId,
                     MessageType = typeof(T),
                     Body = message
                 });

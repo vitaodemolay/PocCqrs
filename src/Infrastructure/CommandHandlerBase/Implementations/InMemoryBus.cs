@@ -46,10 +46,7 @@ namespace Infrastructure.CommandHandlerBase.Implementations
 
         private void Invoke<T>(MessageBase message) where T : MessageBase
         {
-            //(this.DependencyResolver.GetService<IHandler<T>>()).Handle((T)message);
-
-            var handler = this.DependencyResolver.GetService<IHandler<T>>();
-            handler.Handle((T)message);
+            (this.DependencyResolver.GetService<IHandler<T>>()).Handle((T)message);
         }
     }
 }

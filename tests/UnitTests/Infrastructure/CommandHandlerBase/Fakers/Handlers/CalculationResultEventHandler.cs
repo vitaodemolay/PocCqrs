@@ -15,7 +15,7 @@ namespace UnitTests.Infrastructure.CommandHandlerBase.Fakers.Handlers
 
         public void Handle(CalculationResultEvent message)
         {
-            _database.AddMessage(message);
+            _database.AddMessage(message, message.CorrelationId);
         }
     }
 }
