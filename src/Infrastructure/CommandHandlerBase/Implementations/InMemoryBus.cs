@@ -1,24 +1,37 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Infrastructure.CommandHandlerBase.Contracts;
 using Infrastructure.CommandHandlerBase.Messages;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace Infrastructure.CommandHandlerBase.Implementations
 {
-    public sealed class InMemoryBus : IBus
+    public sealed class InMemoryBus:  IBus
     {
-        private readonly IList<Type> handlers = new List<Type>();
-        private readonly IDependencyResolver dependencyResolver;
+        private readonly IServiceCollection _services;
+        private IServiceProvider _container;
 
-        public InMemoryBus(IDependencyResolver dependencyResolver)
+        private IServiceProvider DependencyResolver
         {
-            this.dependencyResolver = dependencyResolver;
+            get
+            {
+                if (_container == null)
+                    _container = _services.BuildServiceProvider();
+
+                return _container;
+            }
+
         }
 
-        public void RegisterHandler<T>()
+        public InMemoryBus(IServiceCollection services)
         {
-            this.handlers.Add(typeof(T));
+            _services = services;
+        }
+
+        public void RegisterHandler<M, H>()
+            where M : MessageBase
+            where H : class, IHandler<M>
+        {
+            _services.AddTransient<IHandler<M>, H>();
         }
 
         public void Send<T>(T command) where T : Command
@@ -33,10 +46,10 @@ namespace Infrastructure.CommandHandlerBase.Implementations
 
         private void Invoke<T>(MessageBase message) where T : MessageBase
         {
-            var handlerType = typeof(IHandler<>).MakeGenericType(typeof(T));
+            //(this.DependencyResolver.GetService<IHandler<T>>()).Handle((T)message);
 
-            foreach (var handler in handlers.Where(h => handlerType.IsAssignableFrom(h)))
-                ((IHandler<T>)this.dependencyResolver.Get(handler)).Handle((T)message);
+            var handler = this.DependencyResolver.GetService<IHandler<T>>();
+            handler.Handle((T)message);
         }
     }
 }

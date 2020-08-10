@@ -8,7 +8,7 @@ namespace UnitTests.Infrastructure.CommandHandlerBase.Fakers.Handlers
     {
         private readonly IBus _busObject;
         const string _operationName =  "SumTwoNumbers";
-        internal SumTwoNumbersCommandHandler(IBus busObject)
+        public SumTwoNumbersCommandHandler(IBus busObject)
         {
             _busObject = busObject;
         }
