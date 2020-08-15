@@ -2,6 +2,7 @@ using Infrastructure.CommandHandlerBase.Contracts;
 using Infrastructure.CommandHandlerBase.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading.Tasks;
 
 namespace Infrastructure.CommandHandlerBase.Implementations
 {
@@ -34,19 +35,25 @@ namespace Infrastructure.CommandHandlerBase.Implementations
             _services.AddTransient<IHandler<M>, H>();
         }
 
-        public void Send<T>(T command) where T : Command
+        public async Task<ISendResult> Send<T>(T command) where T : Command
         {
-            Invoke<T>(command);
+            var validationResult = command.Validate();
+            if (validationResult.IsValid)
+            {
+               await Invoke<T>(command);
+            }
+
+            return new SendResult(validationResult);
         }
 
-        public void Dispatch<T>(T @event) where T : Event
+        public Task Dispatch<T>(T @event) where T : Event
         {
-            Invoke<T>(@event);
+            return Invoke<T>(@event);
         }
 
-        private void Invoke<T>(MessageBase message) where T : MessageBase
+        private Task Invoke<T>(MessageBase message) where T : MessageBase
         {
-            (this.DependencyResolver.GetService<IHandler<T>>()).Handle((T)message);
+           return Task.Run(() => (this.DependencyResolver.GetService<IHandler<T>>()).Handle((T)message));
         }
     }
 }

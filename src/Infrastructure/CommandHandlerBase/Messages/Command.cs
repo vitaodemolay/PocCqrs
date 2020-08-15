@@ -1,3 +1,5 @@
+using Infrastructure.CommandHandlerBase.Contracts;
+
 namespace Infrastructure.CommandHandlerBase.Messages
 {
     public abstract class Command : MessageBase
@@ -5,5 +7,7 @@ namespace Infrastructure.CommandHandlerBase.Messages
         protected Command() : base()
         {
         }
+
+        public abstract IValidationResult Validate();
     }
 }

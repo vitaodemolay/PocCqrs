@@ -5,7 +5,7 @@ namespace Infrastructure.CommandHandlerBase.Messages
     {
         public Guid MessageId { get; private set; }
 
-        public MessageBase(){
+        protected MessageBase(){
             MessageId = Guid.NewGuid();
         }
     }

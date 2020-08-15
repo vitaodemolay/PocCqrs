@@ -17,7 +17,7 @@ namespace UnitTests.Infrastructure.CommandHandlerBase.Fakers.Handlers
         {
             var result = message.FirstValue + message.SecondValue;
 
-            _busObject.Dispatch(new CalculationResultEvent(result, _operationName, message.MessageId));
+            _busObject.Dispatch(new CalculationResultEvent(result, _operationName, message.MessageId)).Wait();
         }
     }
 }

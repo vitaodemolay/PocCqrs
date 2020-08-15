@@ -1,11 +1,12 @@
 using Infrastructure.CommandHandlerBase.Messages;
+using System.Threading.Tasks;
 
 namespace Infrastructure.CommandHandlerBase.Contracts
 {
     public interface IBus
     {
         void RegisterHandler<M, H>() where M : MessageBase where H : class, IHandler<M>;
-        void Send<T>(T command) where T : Command;
-        void Dispatch<T>(T @event) where T : Event;
+        Task<ISendResult> Send<T>(T command) where T : Command;
+        Task Dispatch<T>(T @event) where T : Event;
     }
 }
