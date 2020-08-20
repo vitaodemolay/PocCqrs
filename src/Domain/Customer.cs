@@ -9,7 +9,7 @@ namespace Domain
         public Guid Id { get; private set; }
         public string Name { get; private set; }
 
-        private List<Contact> _contacts;
+        private readonly List<Contact> _contacts;
 
         public Customer(string name, Guid? id = null, IList<Contact> contacts = null)
         {
