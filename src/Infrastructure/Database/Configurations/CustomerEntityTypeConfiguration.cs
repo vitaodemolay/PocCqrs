@@ -10,12 +10,14 @@ namespace Infrastructure.Database.Configurations
         {
             builder.ToTable("TbCustomer");
 
-            builder.HasKey(f => f.Id)
-                .HasName("CustomerId");
+            builder.Property(f => f.Id)
+               .HasColumnName("CustomerId");
 
             builder.Property(f => f.Name)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.HasKey(f => f.Id);
 
             builder.HasMany(f => f.Contacts)
                 .WithOne()
