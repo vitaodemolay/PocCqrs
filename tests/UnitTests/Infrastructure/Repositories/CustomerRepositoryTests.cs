@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Bogus;
+using Domain;
 using FluentAssertions;
 using Infrastructure.Database.Context;
 using Infrastructure.Repositories.Customer;
@@ -43,14 +44,32 @@ namespace UnitTests.Infrastructure.Repositories
             var repository = new CustomerRepository(_context);
 
             //Act
-             await repository.CreateCustomer(customer);
+             await repository.CreateCustomerAsync(customer);
 
             //Assert
-            var result = await repository.GetCustomerById(customer.Id);
-            result.Should()
+            (await repository.GetCustomerByIdAsync(customer.Id)).Should()
                 .NotBeNull().And
                 .BeSameAs(customer).And
                 .Match((f => ((Customer)f).Contacts.Count == numberOfContacts));
+        }
+
+        [Fact]
+        public async Task ShouldGetOneExistsCustomerChangePropertyNameAndUpdateOnDatabaseSuccessfully()
+        {
+            //Arrange
+            var oldCustomer = CreateCustomerListFakeWithContacts(numberOfContacts: 3).First();
+            CreateOneCustomerSaveThisOnDatabaseAndReturnYourName(oldCustomer.Id, oldCustomer.Name, oldCustomer.Contacts, _context); 
+            var customerNewName = new Faker().Person.FullName;
+            var repository = new CustomerRepository(_context);
+
+            //Act
+            await repository.UpdateCustomerAsync(new Customer(customerNewName, oldCustomer.Id));
+
+            //Assert
+            (await repository.GetCustomerByIdAsync(oldCustomer.Id)).Should()
+                .NotBeNull().And
+                .NotBeSameAs(oldCustomer).And
+                .Match(f => ((Customer)f).Name == customerNewName && ((Customer)f).Contacts.Count == 0);
         }
 
     }

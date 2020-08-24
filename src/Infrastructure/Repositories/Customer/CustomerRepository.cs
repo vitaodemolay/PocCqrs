@@ -14,20 +14,25 @@ namespace Infrastructure.Repositories.Customer
             _context = context;
         }
 
-        public async Task CreateCustomer(Domain.Customer customer)
+        public async Task CreateCustomerAsync(Domain.Customer customer)
         {
             await _context.Customers.AddAsync(customer);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Domain.Customer> GetCustomerById(Guid customerId)
+        public async Task<Domain.Customer> GetCustomerByIdAsync(Guid customerId)
         {
             return await _context.Customers.FindAsync(customerId);
         }
 
-        public async Task UpdateCustomer(Domain.Customer customer)
+        public async Task UpdateCustomerAsync(Domain.Customer customer)
         {
-            _context.Customers.Update(customer);
+            var oldCustomer = await GetCustomerByIdAsync(customer.Id);
+
+            oldCustomer.ChangeName(customer.Name);
+            oldCustomer.OverrideContactList(customer.Contacts);
+
+            _context.Customers.Update(oldCustomer);
             await _context.SaveChangesAsync();
         }
     }

@@ -1,6 +1,9 @@
 ﻿using Bogus;
 using Domain;
+using Infrastructure.Database.Context;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using static UnitTests.Domain.FakeObjects.ContactFaker;
 
 namespace UnitTests.Infrastructure.Repositories.Fakers
@@ -29,6 +32,13 @@ namespace UnitTests.Infrastructure.Repositories.Fakers
                                     });
 
             return customerFaker.Generate(numberOf);
+        }
+
+        internal static void CreateOneCustomerSaveThisOnDatabaseAndReturnYourName(Guid customerId, string customerName, IEnumerable<Contact> contacts,  DataContext context)
+        {
+            var customer = new Customer(customerName, customerId, contacts.ToList());
+
+            context.Customers.Add(customer).Context.SaveChanges();
         }
     }
 }

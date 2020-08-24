@@ -5,8 +5,8 @@ namespace Domain
 {
     public interface ICustomerRepository
     {
-        Task CreateCustomer(Customer customer);
-        Task UpdateCustomer(Customer customer);
-        Task<Customer> GetCustomerById(Guid customerId);
+        Task CreateCustomerAsync(Customer customer);
+        Task UpdateCustomerAsync(Customer customer);
+        Task<Customer> GetCustomerByIdAsync(Guid customerId);
     }
 }

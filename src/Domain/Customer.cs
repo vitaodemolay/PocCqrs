@@ -25,9 +25,24 @@ namespace Domain
 
         public IReadOnlyList<Contact> Contacts => _contacts.AsReadOnly();
 
+        public void ChangeName(string name)
+        {
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException(nameof(name));
+
+            Name = name;
+        }
+
         public void AddNewContact(Contact contact)
         {
             _contacts.Add(contact);
+        }
+
+        public void OverrideContactList(IEnumerable<Contact> contacts = null)
+        {
+            _contacts.Clear();
+
+            if(contacts?.Any() ?? false)
+                _contacts.AddRange(contacts);
         }
 
     }
