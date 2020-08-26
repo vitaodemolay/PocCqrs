@@ -34,7 +34,7 @@ namespace UnitTests.Infrastructure.Repositories.Fakers
             return customerFaker.Generate(numberOf);
         }
 
-        internal static void CreateOneCustomerSaveThisOnDatabaseAndReturnYourName(Guid customerId, string customerName, IEnumerable<Contact> contacts,  DataContext context)
+        internal static void CreateOneCustomerAndSaveThisOnDatabase(Guid customerId, string customerName, IEnumerable<Contact> contacts,  DataContext context)
         {
             var customer = new Customer(customerName, customerId, contacts.ToList());
 

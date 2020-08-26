@@ -58,7 +58,7 @@ namespace UnitTests.Infrastructure.Repositories
         {
             //Arrange
             var oldCustomer = CreateCustomerListFakeWithContacts(numberOfContacts: 3).First();
-            CreateOneCustomerSaveThisOnDatabaseAndReturnYourName(oldCustomer.Id, oldCustomer.Name, oldCustomer.Contacts, _context); 
+            CreateOneCustomerAndSaveThisOnDatabase(oldCustomer.Id, oldCustomer.Name, oldCustomer.Contacts, _context); 
             var customerNewName = new Faker().Person.FullName;
             var repository = new CustomerRepository(_context);
 
