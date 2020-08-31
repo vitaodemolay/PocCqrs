@@ -1,10 +1,12 @@
 ﻿using Bogus;
+using Bogus.DataSets;
 using Domain;
 using FluentAssertions;
 using Infrastructure.Database.Context;
 using Infrastructure.Repositories.Customer;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,7 +52,7 @@ namespace UnitTests.Infrastructure.Repositories
             (await repository.GetCustomerByIdAsync(customer.Id)).Should()
                 .NotBeNull().And
                 .BeSameAs(customer).And
-                .Match((f => ((Customer)f).Contacts.Count == numberOfContacts));
+                .Match((f => ((Customer)f).Contacts.Count == numberOfContacts && ((Customer)f).LastOrder == null && ((Customer)f).LastUpdate == null));
         }
 
         [Fact]
@@ -63,13 +65,33 @@ namespace UnitTests.Infrastructure.Repositories
             var repository = new CustomerRepository(_context);
 
             //Act
-            await repository.UpdateCustomerAsync(new Customer(customerNewName, oldCustomer.Id));
+            await repository.UpdateCustomerNameAndContactsAsync(new Customer(customerNewName, oldCustomer.Id));
 
             //Assert
             (await repository.GetCustomerByIdAsync(oldCustomer.Id)).Should()
                 .NotBeNull().And
                 .NotBeSameAs(oldCustomer).And
-                .Match(f => ((Customer)f).Name == customerNewName && ((Customer)f).Contacts.Count == 0);
+                .Match(f => ((Customer)f).Name == customerNewName && ((Customer)f).Contacts.Count == 0 && ((Customer) f).LastOrder == null && ((Customer)f).LastUpdate != null);
+        }
+
+
+        [Fact]
+        public async Task ShouldGetOneExistsCustomerChangeLastOrderAndUpdateOnDatabaseSuccessfully()
+        {
+            //Arrange
+            var oldCustomer = CreateCustomerListFakeWithContacts(numberOfContacts: 3).First();
+            CreateOneCustomerAndSaveThisOnDatabase(oldCustomer.Id, oldCustomer.Name, oldCustomer.Contacts, _context);
+            var repository = new CustomerRepository(_context);
+            var orderDate = DateTime.Now;
+
+            //Act
+            await repository.UpdateLastOrderDate(oldCustomer.Id, orderDate);
+
+            //Assert
+            (await repository.GetCustomerByIdAsync(oldCustomer.Id)).Should()
+                .NotBeNull().And
+                .NotBeSameAs(oldCustomer).And
+                .Match(f => ( ((Customer)f).Contacts.Count == oldCustomer.Contacts.Count && ((Customer)f).LastOrder == orderDate && ((Customer)f).LastUpdate != null));
         }
 
     }

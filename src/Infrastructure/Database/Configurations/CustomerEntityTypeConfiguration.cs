@@ -27,6 +27,17 @@ namespace Infrastructure.Database.Configurations
             var navigation = builder.Metadata.FindNavigation(nameof(Customer.Contacts));
 
             navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
+
+
+            builder.Property(f => f.CreationDate)
+                .HasDefaultValueSql("GetDate()")
+                .IsRequired();
+
+            builder.Property(f => f.LastUpdate)
+                .IsRequired(false);
+
+            builder.Property(f => f.LastOrder)
+                .IsRequired(false);
         }
     }
 }

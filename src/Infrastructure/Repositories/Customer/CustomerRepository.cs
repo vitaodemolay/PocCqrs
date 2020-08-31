@@ -25,12 +25,24 @@ namespace Infrastructure.Repositories.Customer
             return await _context.Customers.FindAsync(customerId);
         }
 
-        public async Task UpdateCustomerAsync(Domain.Customer customer)
+        public async Task UpdateCustomerNameAndContactsAsync(Domain.Customer customer)
         {
             var oldCustomer = await GetCustomerByIdAsync(customer.Id);
 
             oldCustomer.ChangeName(customer.Name);
             oldCustomer.OverrideContactList(customer.Contacts);
+            oldCustomer.SetValueForLastUpdate();
+
+            _context.Customers.Update(oldCustomer);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateLastOrderDate(Guid customerId, DateTime lastOrder)
+        {
+            var oldCustomer = await GetCustomerByIdAsync(customerId);
+
+            oldCustomer.SetValueForLastOrder(lastOrder);
+            oldCustomer.SetValueForLastUpdate();
 
             _context.Customers.Update(oldCustomer);
             await _context.SaveChangesAsync();
